@@ -1,0 +1,14 @@
+
+
+[[constraint]]
+  name = "github.com/sirupsen/logrus"
+  branch = "master"
+
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/moogar0880/venom"
+
+[[constraint]]
+  name = "github.com/nlopes/slack"
+  version = "0.2.0"
