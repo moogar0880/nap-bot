@@ -12,17 +12,20 @@ import (
 
 const excludeArchived = true
 
+// ChannelIDManager is responsible for mapping channel names to their IDs
 type ChannelIDManager struct {
 	channelIDsByName map[string]string
 	client           *slack.Client
 }
 
+// NewChannelIDManager returns a newly initialized ChannelIDManager
 func NewChannelIDManager() *ChannelIDManager {
 	return &ChannelIDManager{
 		channelIDsByName: make(map[string]string),
 	}
 }
 
+// Init initializes the ChannelIDManager with the provided slack.Client
 func (m *ChannelIDManager) Init(c *slack.Client) error {
 	m.client = c
 	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Minute)
@@ -38,6 +41,7 @@ func (m *ChannelIDManager) Init(c *slack.Client) error {
 	return nil
 }
 
+// Get returns the id of a channel by name, if one exists in the map
 func (m *ChannelIDManager) Get(name string) (string, error) {
 	if channelID, ok := m.channelIDsByName[name]; ok {
 		return channelID, nil
@@ -46,6 +50,7 @@ func (m *ChannelIDManager) Get(name string) (string, error) {
 	return "", fmt.Errorf("bot: no such channel: %s", name)
 }
 
+// A Bot encapsulates all components of the slack bot
 type Bot struct {
 	Config         config.Config
 	client         *slack.Client
@@ -54,6 +59,7 @@ type Bot struct {
 	Done           chan bool
 }
 
+// New creates a newly initialized Bot instance based on the provided config
 func New(c config.Config) *Bot {
 	return &Bot{
 		Config:         c,

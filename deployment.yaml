@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: napbot
 spec:
-  replicas: 3
+  replicas: 1
   strategy:
     type: Recreate  # Delete the existing pods before creating the new one.
                     # This way we don't have two bots connected at once, which

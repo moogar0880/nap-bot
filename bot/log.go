@@ -12,6 +12,7 @@ const (
 
 var log = logrus.WithField(originField, botOrigin)
 
+// InitializeLogger manages the logrus configuration for the service
 func InitializeLogger(c config.Config) {
 	switch c.LogLevel {
 	case "DEBUG":

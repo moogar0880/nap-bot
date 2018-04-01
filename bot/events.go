@@ -11,6 +11,8 @@ const (
 	addEvent = "add"
 )
 
+// EmojiChangedEventHandler is the handler that's fired when any emoji related
+// event is triggered.
 func EmojiChangedEventHandler(e *slack.EmojiChangedEvent, client *slack.Client, m *ChannelIDManager, c config.Config) error {
 	// we only care about new emojis, so fail gracefully if we get any other
 	// kind of event
@@ -27,7 +29,9 @@ func EmojiChangedEventHandler(e *slack.EmojiChangedEvent, client *slack.Client, 
 		_, _, err = client.PostMessage(
 			channelID,
 			fmt.Sprintf("The following new emoji was just added :%s:", e.Name),
-			slack.PostMessageParameters{},
+			slack.PostMessageParameters{
+				AsUser: true,
+			},
 		)
 		if err != nil {
 			log.WithError(err).Errorf("unable to send message to %s", channel)
