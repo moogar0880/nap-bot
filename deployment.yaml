@@ -1,0 +1,32 @@
+apiVersion: extensions/v1beta1 
+kind: Deployment 
+metadata:
+  name: napbot
+spec:
+  replicas: 3
+  strategy:
+    type: Recreate  # Delete the existing pods before creating the new one.
+                    # This way we don't have two bots connected at once, which
+                    # is not desired for custom integrations.
+                    #
+                    # The RollingUpdate strategy should be used for Slack Apps,
+                    # which need to scale to multiple teams.
+  template:
+    metadata:
+      labels:
+        app: napbot
+    spec:
+      containers:
+      - name: napbot
+        image: gcr.io/moogar0880/nap-bot:0.0.0
+        command: ["/bin/nap-bot"]
+        volumeMounts:
+        - name: slack-token
+          mountPath: /etc/slack-token
+        env:
+        - name: slack_token_path
+          value: /etc/slack-token/slack-token
+      volumes:
+      - name: slack-token
+        secret:
+          secretName: slack-token

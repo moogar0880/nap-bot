@@ -2,12 +2,13 @@
 FROM golang:alpine as golang
 WORKDIR /go/src/github.com/moogar0880/nap-bot
 COPY . /go/src/github.com/moogar0880/nap-bot
+
 RUN apk add --update --no-cache \
         gcc \
         git \
         make \
         musl-dev \
- && make build/alpine
+&& make build/alpine
 
 # essentials stage
 FROM alpine:latest as alpine
@@ -24,4 +25,4 @@ ENV ZONEINFO /zoneinfo.zip
 COPY --from=alpine /zoneinfo.zip /
 
 COPY --from=alpine /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-ENTRYPOINT ["/bin"]
+ENTRYPOINT ["/bin/nap-bot"]

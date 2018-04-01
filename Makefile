@@ -4,7 +4,7 @@ VERSION=$(shell git describe --tags 2> /dev/null || echo '0.0.0')
 GIT_COMMIT=$(shell git rev-parse HEAD)
 GIT_DIRTY=$(shell test -n "`git status --porcelain`" && echo "+CHANGES" || true)
 PRERELEASE=
-IMAGE_NAME := "moogar0880/nap-bot"
+IMAGE_NAME := moogar0880/nap-bot
 
 # if we have untagged commits, mark this build as a pre-release
 ifneq ($(strip $(GIT_DIRTY)),)
@@ -25,7 +25,7 @@ help:
 	@echo '    make test/coverage   Generate and view HTML coverage report in a browser.'
 	@echo '    make vendor          runs dep to fetch vendor dependencies.'
 	@echo '    make binary          Compile the binary for this project.'
-	@echo '    make build/salpine    Compile optimized for alpine linux.'
+	@echo '    make build/alpine    Compile optimized for alpine linux.'
 	@echo '    make package         Build final docker image with just the go binary inside'
 	@echo '    make push            Push tagged images to registry'
 	@echo '    make tag             Tag image created by package with latest, git commit and version'
@@ -93,3 +93,19 @@ push: tag
 	docker push $(IMAGE_NAME):$(GIT_COMMIT)
 	docker push $(IMAGE_NAME):${VERSION}
 	docker push $(IMAGE_NAME):latest
+	gcloud docker -- gcr.io/${IMAGE_NAME}:${VERSION}
+
+.PHONY: package/gcloud
+package/gcloud:
+	@echo "building image ${BIN_NAME} ${VERSION} $(GIT_COMMIT)"
+	docker build --build-arg VERSION=${VERSION} --build-arg GIT_COMMIT=$(GIT_COMMIT) -t gcr.io/$(IMAGE_NAME):local .
+
+.PHONY: tag/gcloud
+tag/gcloud: package/gcloud
+	@echo "Tagging: latest ${VERSION}"
+	docker tag gcr.io/$(IMAGE_NAME):local gcr.io/$(IMAGE_NAME):${VERSION}
+
+.PHONY: push/gcloud
+push/gcloud: tag/gcloud
+	@echo "Pushing docker image to gcr: ${VERSION}"
+	gcloud docker -- push gcr.io/${IMAGE_NAME}:${VERSION}
