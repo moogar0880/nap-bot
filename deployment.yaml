@@ -18,14 +18,17 @@ spec:
     spec:
       containers:
       - name: napbot
-        image: gcr.io/moogar0880/nap-bot:0.0.0
+        image: gcr.io/moogar0880/nap-bot:0.0.2
         command: ["/bin/nap-bot"]
         volumeMounts:
         - name: slack-token
           mountPath: /etc/slack-token
         env:
-        - name: slack_token_path
-          value: /etc/slack-token/slack-token
+          - name: AUTH_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: slack-token
+                key: slack-token.txt
       volumes:
       - name: slack-token
         secret:

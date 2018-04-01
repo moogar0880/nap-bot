@@ -78,7 +78,12 @@ build/alpine:
 .PHONY: package
 package:
 	@echo "building image ${BIN_NAME} ${VERSION} $(GIT_COMMIT)"
-	docker build --build-arg VERSION=${VERSION} --build-arg GIT_COMMIT=$(GIT_COMMIT) -t $(IMAGE_NAME):local .
+	docker build \
+		--no-cache \
+		--build-arg VERSION=${VERSION} \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
+		-t $(IMAGE_NAME):local \
+		.
 
 .PHONY: tag
 tag: 
@@ -98,7 +103,12 @@ push: tag
 .PHONY: package/gcloud
 package/gcloud:
 	@echo "building image ${BIN_NAME} ${VERSION} $(GIT_COMMIT)"
-	docker build --build-arg VERSION=${VERSION} --build-arg GIT_COMMIT=$(GIT_COMMIT) -t gcr.io/$(IMAGE_NAME):local .
+	docker build \
+		--no-cache \
+		--build-arg VERSION=${VERSION} \
+		--build-arg GIT_COMMIT=$(GIT_COMMIT) \
+		-t gcr.io/$(IMAGE_NAME):local \
+		.
 
 .PHONY: tag/gcloud
 tag/gcloud: package/gcloud

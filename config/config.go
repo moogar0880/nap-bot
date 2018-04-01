@@ -21,7 +21,7 @@ func New() *Config {
 		LogLevel:  "INFO",
 		AuthToken: "",
 		EmojiAddConfig: EmojiAddConfig{
-			Channels: make([]string, 0),
+			Channels: []string{"bots"},
 		},
 	}
 }
