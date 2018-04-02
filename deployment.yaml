@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: napbot
-        image: gcr.io/moogar0880/nap-bot:0.0.2
+        image: gcr.io/moogar0880/nap-bot:0.0.3
         command: ["/bin/nap-bot"]
         volumeMounts:
         - name: slack-token
